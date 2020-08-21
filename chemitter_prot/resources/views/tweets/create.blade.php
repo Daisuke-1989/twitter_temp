@@ -10,7 +10,22 @@
                 <div class="card-body">
                     <form method="POST" action="{{ route('tweets.store') }}">
                         @csrf
-
+                        <div id="jsme_container"></div>
+                        <div class="container">
+                            <div class="section">
+                            <div id="app" class="row columns is-multiline">
+                                <div v-for="card in cardData" :key="card.id" class="column is-3">
+                                <div class="card large">
+                                    <div class="card-image is-16by9">
+                                    <!-- <figure class="image"> -->
+                                    <canvas :data-idcode="card.idCode" width="200" height="100" class="actstruct"></canvas>
+                                    <!-- </figure> -->
+                                    </div>
+                                </div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
                         <div class="form-group row mb-0">
                             <div class="col-md-12 p-3 w-100 d-flex">
                                 <img src="{{ asset('storage/profile_image/' .$user->profile_image) }}" class="rounded-circle" width="50" height="50">
@@ -30,6 +45,10 @@
                             </div>
                         </div>
 
+
+
+
+
                         <div class="form-group row mb-0">
                             <div class="col-md-12 text-right">
                                 <p class="mb-4 text-danger">140文字以内</p>
@@ -44,4 +63,37 @@
         </div>
     </div>
 </div>
+<script src="{{ asset('node_modules/jsme/jsme/jsme.nocache.js') }}"></script>
+<script src="{{ asset('node_modules/openchemlib/dist/openchemlib-full.js') }}"></script>
+<script src="{{ asset('js/cardsData.js') }}"></script>
+<script>
+    //this function will be called after the JavaScriptApplet code has been loaded.
+    function jsmeOnLoad() {
+      jsmeApplet = new JSApplet.JSME("jsme_container", "380px", "340px");
+      function showSmiles(jsmeEvent) {
+        var jsme = jsmeEvent.src;
+        var molfile = jsme.molFile();
+        // console.log(molfile);
+        worker.postMessage({ 'cmd': 'query', 'msg': molfile });
+      }
+      jsmeApplet.setAfterStructureModifiedCallback(showSmiles);
+    }
+  </script>
+  <script>
+    var app = new Vue({
+      el: '#app',
+      created() {
+        // console.log(this.cardData)
+      },
+      watch: {
+        cardData: function (newVal, oldVal) {
+          console.log(newVal, oldVal)
+          OCL.StructureView.showStructures('actstruct');
+        }
+      },
+      data: {
+        cardData: cardsData
+      }
+    })
+  </script>
 @endsection
