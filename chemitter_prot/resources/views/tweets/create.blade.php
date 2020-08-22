@@ -6,26 +6,23 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">Create</div>
-
                 <div class="card-body">
-                    <form method="POST" action="{{ route('tweets.store') }}">
-                        @csrf
-                        <div id="jsme_container"></div>
-                        <div class="container">
-                            <div class="section">
+                    <div id="jsme_container"></div>
+                    <div class="container">
+                        <div class="section">
                             <div id="app" class="row columns is-multiline">
                                 <div v-for="card in cardData" :key="card.id" class="column is-3">
-                                <div class="card large">
-                                    <div class="card-image is-16by9">
-                                    <!-- <figure class="image"> -->
-                                    <canvas :data-idcode="card.idCode" width="200" height="100" class="actstruct"></canvas>
-                                    <!-- </figure> -->
+                                    <div class="card large">
+                                        <div class="card-image is-16by9">
+                                            <canvas v-on:click="getData" :data-idcode="card.idCode" width="200" height="100" class="actstruct" ></canvas>
+                                        </div>
                                     </div>
                                 </div>
-                                </div>
-                            </div>
                             </div>
                         </div>
+                    </div>
+                    <form method="POST" action="{{ route('tweets.store') }}">
+                        @csrf
                         <div class="form-group row mb-0">
                             <div class="col-md-12 p-3 w-100 d-flex">
                                 <img src="{{ asset('storage/profile_image/' .$user->profile_image) }}" class="rounded-circle" width="50" height="50">
@@ -34,6 +31,10 @@
                                     <a href="{{ url('users/' .$user->id) }}" class="text-secondary">{{ $user->name }}</a>
                                 </div>
                             </div>
+                            <div class="card-image is-16by9">
+                                <canvas id="canvas" data-idcode="" width="200" height="100" class="actstruct"></canvas>
+                            </div>
+                            <input id="idcode" type="text" name="idcode" hidden >
                             <div class="col-md-12">
                                 <textarea class="form-control @error('text') is-invalid @enderror" name="text" required autocomplete="text" rows="4">{{ old('text') }}</textarea>
 
@@ -44,10 +45,6 @@
                                 @enderror
                             </div>
                         </div>
-
-
-
-
 
                         <div class="form-group row mb-0">
                             <div class="col-md-12 text-right">
@@ -83,7 +80,6 @@
     var app = new Vue({
       el: '#app',
       created() {
-        // console.log(this.cardData)
       },
       watch: {
         cardData: function (newVal, oldVal) {
@@ -93,7 +89,16 @@
       },
       data: {
         cardData: cardsData
-      }
-    })
+      },
+      methods: {
+        getData: function (event) {
+          console.dir(event.target.dataset.idcode);
+          let canvasData = document.getElementById('canvas');
+          let idcode = document.getElementById('idcode');
+          canvasData.setAttribute("data-idcode", event.target.dataset.idcode);
+          idcode.setAttribute("value", event.target.dataset.idcode);
+          OCL.StructureView.showStructures('actstruct');
+        }
+    }})
   </script>
 @endsection
