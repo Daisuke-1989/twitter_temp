@@ -21,6 +21,9 @@
                             </div>
                         </div>
                         <div class="card-body">
+                            <div class="card-image is-16by9">
+                                <canvas data-idcode="{{ $timeline->idcode }}" width="200" height="100" class="actstruct"></canvas>
+                            </div>
                             {!! nl2br(e($timeline->text)) !!}
                         </div>
                         <div class="card-footer py-1 d-flex justify-content-end bg-white">
@@ -64,10 +67,6 @@
                                 <a href="{{ url('tweets/' .$timeline->id) }}"><i class="far fa-comment fa-fw"></i></a>
                                 <p class="mb-0 text-secondary">{{ count($timeline->comments) }}</p>
                             </div>
-                            <div class="d-flex align-items-center">
-                                <button type="" class="btn p-0 border-0 text-primary"><i class="far fa-heart fa-fw"></i></button>
-                                <p class="mb-0 text-secondary">{{ count($timeline->favorites) }}</p>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -78,4 +77,10 @@
         {{ $timelines->links() }}
     </div>
 </div>
+<script src="{{ asset('node_modules/openchemlib/dist/openchemlib-full.js') }}"></script>
+<script>
+window.onload = function() {
+  OCL.StructureView.showStructures('actstruct');
+};
+</script>
 @endsection
