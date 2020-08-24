@@ -20,6 +20,9 @@
                                     <a href="{{ url('users/' .$user->id) }}" class="text-secondary">{{ $user->screen_name }}</a>
                                 </div>
                             </div>
+                            <div id="jsme_container"></div>
+                            <canvas id="canvas" data-idcode="{{ $tweets->idcode }}" width="200" height="100" class="actstruct" hidden></canvas>
+                            <input id="idcode" type="text" name="idcode" hidden >
                             <div class="col-md-12">
                                 <textarea class="form-control @error('text') is-invalid @enderror" name="text" required autocomplete="text" rows="4">{{ old('text') ? : $tweets->text }}</textarea>
 
@@ -45,4 +48,26 @@
         </div>
     </div>
 </div>
+<script src="{{ asset('node_modules/jsme/jsme/jsme.nocache.js') }}"></script>
+<script src="{{ asset('node_modules/openchemlib/dist/openchemlib-full.js') }}"></script>
+<script>
+    //this function will be called after the JavaScriptApplet code has been loaded.
+    function jsmeOnLoad() {
+      jsmeApplet = new JSApplet.JSME("jsme_container", "380px", "340px");
+      function showSmiles(jsmeEvent) {
+        var jsme = jsmeEvent.src;
+        var molfile = jsme.molFile();
+        var setMol = OCL.Molecule.fromMolfile(molfile + '');
+        var setID = setMol.getIDCode();
+        let idcode = document.getElementById('idcode');
+        idcode.setAttribute("value", setID);
+      }
+      let canvasData = document.getElementById('canvas');
+      let idCode = canvasData.getAttribute('data-idcode');
+      let mol = OCL.Molecule.fromIDCode(idCode);
+      let molFile = mol.toMolfile();
+      jsmeApplet.readMolFile(molFile);
+      jsmeApplet.setAfterStructureModifiedCallback(showSmiles);
+    }
+  </script>
 @endsection

@@ -92,7 +92,6 @@
       },
       methods: {
         getData: function (event) {
-          console.dir(event.target.dataset.idcode);
           let canvasData = document.getElementById('canvas');
           let idcode = document.getElementById('idcode');
           canvasData.setAttribute("data-idcode", event.target.dataset.idcode);
