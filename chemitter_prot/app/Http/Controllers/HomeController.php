@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Tweet;
 
 class HomeController extends Controller
 {
@@ -13,7 +14,6 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
     }
 
     /**
@@ -21,8 +21,13 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function index(Tweet $tweet)
     {
-        return view('home');
+        $timelines = $tweet->paginate(50);
+        // dd($timelines);
+
+        return view('home', [
+            'timelines' => $timelines
+        ]);
     }
 }

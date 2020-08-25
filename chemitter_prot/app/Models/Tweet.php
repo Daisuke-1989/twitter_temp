@@ -61,6 +61,7 @@ class Tweet extends Model
     {
         $this->user_id = $user_id;
         $this->text = $data['text'];
+        $this->idcode = $data['idcode'];
         $this->save();
 
         return;
@@ -75,6 +76,7 @@ class Tweet extends Model
     {
         $this->id = $tweet_id;
         $this->text = $data['text'];
+        $this->idcode = $data['idcode'];
         $this->update();
 
         return;
